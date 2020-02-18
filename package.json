@@ -1,0 +1,23 @@
+{
+  "name": "recipes-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate": "knex migrate:latest",
+    "unmigrate": "knex migrate:rollback",
+    "seed": "knex seed:run "
+
+  },
+  "author": "Kyle Jacobson",
+  "license": "ISC",
+  "dependencies": {
+    "cls-hooked": "^4.2.2",
+    "cls-rtracer": "^1.4.0",
+    "fastify": "^2.12.0",
+    "fastify-helmet": "^3.0.2",
+    "knex": "^0.20.10",
+    "pg": "^7.18.1"
+  }
+}
