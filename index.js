@@ -25,11 +25,11 @@ app.get('/recipes/', (req, reply) => {
 })
 app.post('/recipes/', (req, reply) => {
     const { url, title, json } = req.body
-    const recipes = db('recipes').insert({
+    db('recipes').insert({
         title,
         json
     }, ['id']).then((result) => {
-        reply.send(result[0])
+        reply.code(201).send(result[0])
     }, (err) => {
         console.log('Did not succeed in saving recipe')
     })
@@ -52,16 +52,29 @@ app.get('/users/:user_id/recipes/', (req, reply) => {
     db.from('recipes').where('user_id', req.params.user_id).then((response) => {
         reply.send(response)
     }, (err) => {
-        reply.code(404).type('application/json').send('{"error" : "Not Found"}')
+        console.error(err)
+        reply.code(404).send({error : "Not Found"})
     })
 })
 
-app.get('/users', (req, reply) => {
-    const { offset, count } = req.params
-    db('users').offset(offset || 0).limit(count || DEFAULT_PAGE_SIZE).then((response) => {
-        reply.send(response)
-    }, (err) => {
+// app.get('/users', (req, reply) => {
+//     const { offset, count } = req.params
+//     db('users').offset(offset || 0).limit(count || DEFAULT_PAGE_SIZE).then((response) => {
+//         reply.send(response)
+//     }, (err) => {
+//         reply.code(404).send({error : "Not Found"})
+//     })
+// })
 
+app.post('/users', (req, reply) => {
+    const { email } = req.body
+    db('users').insert({
+        email
+    }, ['id']).then((result) => {
+        reply.code(201).send(result[0])
+    }, (err) => {
+        console.error(err)
+        reply.code(422).send({error: "Account creation failed"})
     })
 })
 
@@ -71,11 +84,11 @@ app.get('/users/:id', (req, reply) => {
             const user = response[0]
             reply.send(user)
         } else {
-            reply.code(404).type('application/json').send('{"error" : "Not Found"}')
+            reply.code(404).send('{"error" : "Not Found"}')
         }
     }, (err) => {
         console.error(err)
-        reply.code(404).type('application/json').send('{"error" : "Not Found"}')
+        reply.code(404).send('{"error" : "Not Found"}')
     })
 })
 
@@ -85,21 +98,10 @@ app.get('/users-by-email', (req, reply) => {
             const userId = response[0].id
             reply.send(userId)
         } else {
-            reply.code(404).type('application/json').send('{"error" : "Not Found"}')
+            reply.code(404).send('{"error" : "Not Found"}')
         }
     }, (err) => {
         console.error(err)
-    })
-})
-
-app.post('/users/', (req, reply) => {
-    const { email } = req.body
-    db('users').insert({
-        email
-    }, ['id']).then((result) => {
-        reply.send(result[0])
-    }, (err) => {
-        console.log('Did not succeed in saving user')
     })
 })
 
