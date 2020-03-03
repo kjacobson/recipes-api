@@ -1,6 +1,6 @@
 const fastify = require('fastify')
 const helmet = require('fastify-helmet')
-const rTracer = require('cls-rtracer')
+// const rTracer = require('cls-rtracer')
 
 const db = require('./db.js')
 
@@ -18,7 +18,7 @@ app.register(helmet)
 app.get('/recipes/', (req, reply) => {
     const { offset, count } = req.params
     db('recipes').offset(offset || 0).limit(count || DEFAULT_PAGE_SIZE).then((response) => {
-        reply.send(JSON.stringify(response))
+        reply.send(response)
     }, (err) => {
 
     })
@@ -29,7 +29,7 @@ app.post('/recipes/', (req, reply) => {
         title,
         json
     }, ['id']).then((result) => {
-        reply.send(JSON.stringify(result[0]))
+        reply.send(result[0])
     }, (err) => {
         console.log('Did not succeed in saving recipe')
     })
@@ -46,6 +46,61 @@ app.put('/recipes/:id', (req, reply) => {
 })
 app.delete('/recipes/:id', (req, reply) => {
 
+})
+
+app.get('/users/:user_id/recipes/', (req, reply) => {
+    db.from('recipes').where('user_id', req.params.user_id).then((response) => {
+        reply.send(response)
+    }, (err) => {
+        reply.code(404).type('application/json').send('{"error" : "Not Found"}')
+    })
+})
+
+app.get('/users', (req, reply) => {
+    const { offset, count } = req.params
+    db('users').offset(offset || 0).limit(count || DEFAULT_PAGE_SIZE).then((response) => {
+        reply.send(response)
+    }, (err) => {
+
+    })
+})
+
+app.get('/users/:id', (req, reply) => {
+    db.from('users').where('id', req.params.id).then((response) => {
+        if (response.length) {
+            const user = response[0]
+            reply.send(user)
+        } else {
+            reply.code(404).type('application/json').send('{"error" : "Not Found"}')
+        }
+    }, (err) => {
+        console.error(err)
+        reply.code(404).type('application/json').send('{"error" : "Not Found"}')
+    })
+})
+
+app.get('/users-by-email', (req, reply) => {
+    db.from('users').where('email', req.query.email).then((response) => {
+        if (response.length) {
+            const userId = response[0].id
+            reply.send(userId)
+        } else {
+            reply.code(404).type('application/json').send('{"error" : "Not Found"}')
+        }
+    }, (err) => {
+        console.error(err)
+    })
+})
+
+app.post('/users/', (req, reply) => {
+    const { email } = req.body
+    db('users').insert({
+        email
+    }, ['id']).then((result) => {
+        reply.send(result[0])
+    }, (err) => {
+        console.log('Did not succeed in saving user')
+    })
 })
 
 app.listen(3004, (error) => {
