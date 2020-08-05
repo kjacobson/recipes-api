@@ -15,7 +15,7 @@
   "dependencies": {
     "cls-hooked": "^4.2.2",
     "cls-rtracer": "^1.4.0",
-    "fastify": "^2.12.0",
+    "fastify": "^2.15.1",
     "fastify-helmet": "^3.0.2",
     "knex": "^0.20.10",
     "pg": "^7.18.1"
