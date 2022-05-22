@@ -3,10 +3,10 @@ module.exports = {
     client: 'pg',
     connection: {
         database: 'recipes',
-        user: 'me',
-        host: 'localhost',
-        password: 'password',
-        port: 5432
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'postgres',
+        password: process.env.DB_PWD || 'password',
+        port: process.env.DB_PORT || 5432
     },
     migrations: {
       directory: './data/migrations'
@@ -18,10 +18,10 @@ module.exports = {
     client: 'pg',
     connection: {
         database: 'recipes',
-        user: 'me',
-        host: 'localhost',
-        password: 'password',
-        port: 5432
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'me',
+        password: process.env.DB_PWD || 'password',
+        port: process.env.DB_PORT || 5432
     },
     migrations: {
       directory: './data/migrations'
@@ -33,10 +33,10 @@ module.exports = {
     client: 'pg',
     connection: {
         database: 'recipes',
-        user: 'me',
-        host: 'localhost',
-        password: 'password',
-        port: 5432
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'me',
+        password: process.env.DB_PWD || 'password',
+        port: process.env.DB_PORT || 5432
     },
     migrations: {
       directory: './data/migrations'

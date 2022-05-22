@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "startup": "npm run migrate && npm start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate": "knex migrate:latest",
     "unmigrate": "knex migrate:rollback",
-    "seed": "knex seed:run "
-
+    "seed": "knex seed:run"
   },
   "author": "Kyle Jacobson",
   "license": "ISC",
@@ -17,7 +18,7 @@
     "cls-rtracer": "^1.4.0",
     "fastify": "^2.12.0",
     "fastify-helmet": "^3.0.2",
-    "knex": "^0.20.10",
-    "pg": "^7.18.1"
+    "knex": "^0.21.1",
+    "pg": "^8.0.3"
   }
 }
