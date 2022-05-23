@@ -16,6 +16,8 @@ const app = fastify(
 app.register(helmet)
 // app.register(rTracer.fastifyMiddleware())
 
+// TODO: middleware to make sure user owns the resource in question
+
 
 const retrieveError = (err, code, type) => {
     let response = pgErrors[err.code]
@@ -98,6 +100,20 @@ app.post('/users', (req, reply) => {
     })
 })
 
+app.put('/users/:id', (req, reply) => {
+    const { verified } = req.body
+    db.from('users').where('id', req.params.id)
+        .update({
+            verified
+        }).then((result) => {
+            return reply.code(204).send(result[0])
+        }, (err) => {
+            console.error(err)
+            const { code, type } = retrieveError(err, 400, 'ACCOUNT_UPDATE_FAILED')
+            return reply.code(code).send(type)
+        })
+})
+
 app.get('/users/:id', (req, reply) => {
     db.from('users').where('id', req.params.id).then((response) => {
         if (response.length) {
@@ -125,7 +141,7 @@ app.get('/users-by-email', (req, reply) => {
     })
 })
 
-app.listen(process.env.PORT || 3004, process.env.HOST || '0.0.0.0', (error) => {
+app.listen(process.env.PORT || 3004, process.env.HOST || 'localhost', (error) => {
     if (error) {
         app.log.error(error)
         return process.exit(1)
